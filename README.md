@@ -342,8 +342,9 @@ X_bow = bow_vectorizer.fit_transform(news["content"])
 | | |
 |---|---|
 | **Shape** | `(44919, 5000)` |
-| **How it works** | Raw word counts across top 5,000 vocabulary terms |
-| **Role** | Implemented *"for comparison only"* per the notebook; saved to `Models/bow_vectorizer.pkl` — **not used to train any of the 5 models** |
+| **How it works** | Weights terms by frequency-in-document vs. frequency-across-corpus |
+| **Why chosen** | Down-weights common uninformative words, surfaces discriminative terms — this is the representation used for all 5 models |
+| **Persistence** | `Models/tfidf_vectorizer.pkl` |
 
 ### TF-IDF *(used for model training)*
 
@@ -356,8 +357,8 @@ y = news["label"]
 | | |
 |---|---|
 | **Shape** | `(44919, 5000)` |
-| **How it works** | Weights terms by frequency-in-document vs. frequency-across-corpus |
-| **Why chosen** | Down-weights common uninformative words, surfaces discriminative terms — this is the representation used for all 5 models |
+| **How it works** | Weights terms by their importance within each document while down-weighting terms that are common across the corpus |
+| **Why chosen** | Provides a sparse, discriminative representation for text classification and is the primary representation used by all five models |
 | **Persistence** | `Models/tfidf_vectorizer.pkl` |
 
 ---
@@ -763,12 +764,39 @@ The comparative structure — spanning parametric, probabilistic, ensemble, non-
 
 ## 👤 22. Author
 
-**Machine Learning Engineer / Project Contributor**
+<div align="center">
 
-Developed as part of the Summer Internship Program in AI & ML (2026) — covering end-to-end pipeline design, data preprocessing, feature engineering, model training, and comparative evaluation for fake news detection.
+# Aakash
+
+**Data Analytics Enthusiast · Excel Dashboard Developer · Business Intelligence Learner**
+
+[![GitHub](https://img.shields.io/badge/GitHub-aakashimportant15--max-181717?style=flat-square&logo=github)](https://github.com/aakashimportant15-max)
+
+</div>
+
+---
+
+### About
+
+B.Tech CSE student and aspiring data/AI professional with hands-on experience in data analysis, machine learning, NLP, and dashboard development.
+
+This project was developed as part of the **Summer Internship Program in AI & ML (2026)**, covering:
+
+- Data preprocessing and cleaning
+- Exploratory data analysis
+- Text feature engineering using BoW and TF-IDF
+- Training and comparison of five machine learning models
+- Model evaluation using accuracy, precision, recall, F1-score, and confusion matrices
+- Model and vectorizer persistence for reuse
+
+### Project Repository
+
+🔗 **GitHub:** [AI-Fake-News-Detection](https://github.com/aakashimportant15-max/AI-Fake-News-Detection)
+
+---
 
 <div align="center">
 
----
-⭐ If you found this project useful, consider starring the repository.
+⭐ **If you found this project useful, consider starring the repository.**
+
 </div>

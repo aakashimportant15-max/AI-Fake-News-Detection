@@ -6,9 +6,9 @@
 
 [![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Scikit--Learn](https://img.shields.io/badge/Scikit--Learn-ML-F7931E?style=flat-square&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
-[![NLP](https://img.shields.io/badge/NLP-TF--IDF%20%7C%20BoW-9146FF?style=flat-square)](#-feature-engineering)
-[![Machine Learning](https://img.shields.io/badge/Machine%20Learning-5%20Models%20Compared-2ea44f?style=flat-square)](#-machine-learning-models)
-[![Status](https://img.shields.io/badge/Status-Complete-success?style=flat-square)](#-results)
+[![NLP](https://img.shields.io/badge/NLP-TF--IDF%20%7C%20BoW-9146FF?style=flat-square)](#-8-feature-engineering)
+[![Machine Learning](https://img.shields.io/badge/Machine%20Learning-5%20Models%20Compared-2ea44f?style=flat-square)](#-10-machine-learning-models)
+[![Status](https://img.shields.io/badge/Status-Complete-success?style=flat-square)](#-13-results)
 
 </div>
 
@@ -17,9 +17,9 @@
 > **TL;DR** — Two raw CSV datasets (real + fake news) are cleaned, merged, and vectorized with TF-IDF, then used to train and benchmark five classifiers. **Random Forest wins at 99.51% accuracy.** Every model, vectorizer, and chart is persisted to disk for reuse.
 
 <p align="center">
-  <img src="images/model_accuracy.png" alt="Model Accuracy Comparison" width="700"/>
+  <img src="Results/model_accuracy.png" alt="Bar chart comparing test-set accuracy across all five models" width="700"/>
   <br/>
-  <em>Model accuracy comparison — see <a href="#-model-comparison">Section 12</a> for full breakdown</em>
+  <em>Model accuracy comparison — see <a href="#-12-model-comparison">Section 12</a> for full breakdown</em>
 </p>
 
 ---
@@ -176,7 +176,6 @@ Both datasets share an identical 4-column schema after this step.
 6. Concatenate **again** — this final merge (44,919 rows) is what's carried into modeling
 7. Shuffle via `sample(frac=1, random_state=42)`, reset index
 8. Merge `title` + `text` → `content`; drop originals
-9. Export to `data/processed/merged_news.csv`
 
 ---
 
@@ -230,14 +229,10 @@ Both datasets share an identical 4-column schema after this step.
 
 ## 🔄 5. Project Workflow
 
-<p align="center">
-  <img src="images/workflow_diagram.png" alt="Project Workflow Diagram" width="600"/>
-  <br/>
-  <sub><i>📌 Placeholder — add an exported workflow diagram image here</i></sub>
-</p>
+The end-to-end pipeline, from raw CSVs to model comparison:
 
-<details>
-<summary>🧩 View ASCII pipeline diagram</summary>
+<details open>
+<summary>🧩 View pipeline diagram</summary>
 
 ```
  Load True.csv & Fake.csv
@@ -311,25 +306,27 @@ def clean_text(text):
 
 | Stage | Output File |
 |---|---|
-| Merged (title + text) | `data/processed/merged_news.csv` |
-| Post text-cleaning | `data/cleaned/cleaned_news.csv` |
+| Cleaned dataset | `Dataset/cleaned_news.csv` |
 
 ---
 
 ## 🔍 7. Exploratory Data Analysis
 
 <p align="center">
-  <img src="images/news_distribution.png" width="320"/>
-  <img src="images/true_subject_distribution.png" width="320"/>
-  <img src="images/article_length_distribution.png" width="320"/>
+  <img src="Results/news_distribution.png" alt="Bar chart of real vs. fake article counts" width="320"/>
+  <img src="Results/true_subject_distribution.png" alt="Bar chart of real news subject categories" width="320"/>
+</p>
+<p align="center">
+  <img src="Results/Fake_Subject_Distribution.png" alt="Bar chart of fake news subject categories" width="320"/>
+  <img src="Results/article_length_distribution.png" alt="Histogram of article length by class" width="320"/>
 </p>
 
 | Chart | Purpose | Key Observation | Insight |
 |---|---|---|---|
-| **Real vs. Fake distribution**<br>`images/news_distribution.png` | Check class balance | 21,417 real vs. 23,502 fake | Reasonably balanced — no imbalance correction needed |
-| **True News subject distribution**<br>`images/true_subject_distribution.png` | Topical composition of real news | `politicsNews` (11,272), `worldnews` (10,145) | Real news drawn from only 2 subject tags |
-| **Fake News subject distribution**<br>*(displayed inline, not saved)* | Topical composition of fake news, filtered to 6 valid categories | `News` (9,050), `politics` (6,838), + 4 more | Fake news spans a wider variety of subjects |
-| **Article length distribution**<br>`images/article_length_distribution.png` | Compare text length across classes | Both right-skewed, overlapping | Length alone isn't strongly discriminative — reinforces need for TF-IDF/BoW features |
+| **Real vs. Fake distribution**<br>`Results/news_distribution.png` | Check class balance | 21,417 real vs. 23,502 fake | Reasonably balanced — no imbalance correction needed |
+| **True News subject distribution**<br>`Results/true_subject_distribution.png` | Topical composition of real news | `politicsNews` (11,272), `worldnews` (10,145) | Real news drawn from only 2 subject tags |
+| **Fake News subject distribution**<br>`Results/Fake_Subject_Distribution.png` | Topical composition of fake news, filtered to 6 valid categories | `News` (9,050), `politics` (6,838), + 4 more | Fake news spans a wider variety of subjects |
+| **Article length distribution**<br>`Results/article_length_distribution.png` | Compare text length across classes | Both right-skewed, overlapping | Length alone isn't strongly discriminative — reinforces need for TF-IDF/BoW features |
 
 ---
 
@@ -346,7 +343,7 @@ X_bow = bow_vectorizer.fit_transform(news["content"])
 |---|---|
 | **Shape** | `(44919, 5000)` |
 | **How it works** | Raw word counts across top 5,000 vocabulary terms |
-| **Role** | Implemented *"for comparison only"* per the notebook; saved to `models/bow_vectorizer.pkl` — **not used to train any of the 5 models** |
+| **Role** | Implemented *"for comparison only"* per the notebook; saved to `Models/bow_vectorizer.pkl` — **not used to train any of the 5 models** |
 
 ### TF-IDF *(used for model training)*
 
@@ -361,7 +358,7 @@ y = news["label"]
 | **Shape** | `(44919, 5000)` |
 | **How it works** | Weights terms by frequency-in-document vs. frequency-across-corpus |
 | **Why chosen** | Down-weights common uninformative words, surfaces discriminative terms — this is the representation used for all 5 models |
-| **Persistence** | `models/tfidf_vectorizer.pkl` |
+| **Persistence** | `Models/tfidf_vectorizer.pkl` |
 
 ---
 
@@ -373,11 +370,17 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 ```
 
-| Parameter | Value | | Split | Shape |
-|---|---|---|---|---|
-| Test size | 20% | | `X_train` | (35,935, 5,000) |
-| Train size | 80% | | `X_test` | (8,984, 5,000) |
-| Random state | 42 | | `y_train` / `y_test` | (35,935,) / (8,984,) |
+| Parameter | Value |
+|---|---|
+| Test size | 20% |
+| Train size | 80% |
+| Random state | 42 |
+
+| Split | Shape |
+|---|---|
+| `X_train` | (35,935, 5,000) |
+| `X_test` | (8,984, 5,000) |
+| `y_train` / `y_test` | (35,935,) / (8,984,) |
 
 > `random_state=42` guarantees the same split every run — accuracy comparisons across all 5 models are fully reproducible.
 
@@ -483,7 +486,7 @@ mlp.fit(X_train, y_train)
 | **Confusion Matrix** | `confusion_matrix` / `ConfusionMatrixDisplay` — every model |
 | **Classification Report** | Per-class + macro/weighted averages |
 
-<details>
+<details open>
 <summary>📋 Logistic Regression — detailed metrics</summary>
 
 ```
@@ -501,6 +504,21 @@ Confusion Matrix:
  [  41 4277]]
 ```
 
+<p align="center">
+  <img src="Results/confusion_matrix_LR.png" alt="Confusion matrix for Logistic Regression" width="420"/>
+</p>
+
+</details>
+
+<details>
+<summary>📋 Naive Bayes — confusion matrix</summary>
+
+> A detailed precision/recall/F1 classification report for Naive Bayes was not captured separately in the notebook output; the confusion matrix below summarizes its performance.
+
+<p align="center">
+  <img src="Results/confusion_matrix_NB.png" alt="Confusion matrix for Naive Bayes" width="420"/>
+</p>
+
 </details>
 
 <details>
@@ -515,6 +533,21 @@ Confusion Matrix:
     accuracy                           1.00      8984
 ```
 
+<p align="center">
+  <img src="Results/confusion_matrix_RF.png" alt="Confusion matrix for Random Forest" width="420"/>
+</p>
+
+</details>
+
+<details>
+<summary>📋 K-Nearest Neighbors (KNN) — confusion matrix</summary>
+
+> A detailed precision/recall/F1 classification report for KNN was not captured separately in the notebook output; the confusion matrix below summarizes its performance.
+
+<p align="center">
+  <img src="Results/confusion_matrix_knn.png" alt="Confusion matrix for K-Nearest Neighbors" width="420"/>
+</p>
+
 </details>
 
 <details>
@@ -528,6 +561,10 @@ Confusion Matrix:
 
     accuracy                           0.99      8984
 ```
+
+<p align="center">
+  <img src="Results/confusion_matrix_NN.png" alt="Confusion matrix for Neural Network (MLP)" width="420"/>
+</p>
 
 </details>
 
@@ -545,12 +582,10 @@ Confusion Matrix:
 
 > **Best Model:** `Random Forest` — accuracy **0.995102** on the held-out test set.
 
-- **Methodology:** All 5 models trained on identical TF-IDF features and the identical 80/20 split (`random_state=42`) — directly comparable results, consolidated into `outputs/model_results.csv`. Best model selected via `results_df.loc[results_df["Accuracy"].idxmax()]`.
+- **Methodology:** All 5 models trained on identical TF-IDF features and the identical 80/20 split (`random_state=42`) — directly comparable results, consolidated into `Results/model_results.csv`. Best model selected via `results_df.loc[results_df["Accuracy"].idxmax()]`.
 - **Summary:** All models except KNN exceed 92% accuracy; Random Forest, Neural Network, and Logistic Regression form a top tier above 98%. KNN trails, consistent with its known weakness on high-dimensional sparse TF-IDF spaces.
 
-<p align="center">
-  <img src="images/model_accuracy.png" alt="Model Accuracy Comparison" width="650"/>
-</p>
+> 📊 See the accuracy comparison chart at the top of this document.
 
 ---
 
@@ -576,58 +611,49 @@ Confusion Matrix:
 
 ## 📁 14. Project Folder Structure
 
-```
-AI-FAKE-NEWS-DETECTION/
-├── data/
-│   └── raw/
-│       ├── Fake.csv
-│       └── True.csv
-├── images/
-│   ├── article_length_distribution.png
+```text
+AI-Fake-News-Detection/
+├── Dataset/
+├── Documentation/
+├── Models/
+├── Notebook/
+├── Results/
 │   ├── model_accuracy.png
 │   ├── news_distribution.png
-│   └── true_subject_distribution.png
-├── models/
-│   ├── bow_vectorizer.pkl
-│   ├── knn_model.pkl
-│   ├── logistic_model.pkl
-│   ├── naive_bayes_model.pkl
-│   ├── neural_network_model.pkl
-│   ├── random_forest_model.pkl
-│   └── tfidf_vectorizer.pkl
-├── notebook/
-│   └── Fake_News_Detection.ipynb
-├── outputs/
+│   ├── true_subject_distribution.png
+│   ├── article_length_distribution.png
+│   ├── Fake_Subject_Distribution.png
+│   ├── confusion_matrix_LR.png
+│   ├── confusion_matrix_NB.png
+│   ├── confusion_matrix_NN.png
+│   ├── confusion_matrix_RF.png
+│   ├── confusion_matrix_knn.png
 │   └── model_results.csv
-├── presentation/
-├── reports/
-├── rough sough/
-├── scr/
 ├── .gitignore
-├── project overview.docx
-├── README.md
-└── requirement.txt
+└── README.md
 ```
 
-> 📌 The notebook also writes intermediate datasets to `data/processed/merged_news.csv` and `data/cleaned/cleaned_news.csv` (referenced in code, not visible in the captured directory screenshot).
+| Folder | Contents |
+|---|---|
+| `Dataset/` | Raw source CSVs (`True.csv`, `Fake.csv`) and intermediate exports produced by the notebook |
+| `Documentation/` | Project report / write-up material |
+| `Models/` | Serialized trained models and vectorizers (`.pkl`, via `joblib`) |
+| `Notebook/` | `Fake_News_Detection.ipynb` — the full, single source-of-truth pipeline |
+| `Results/` | All generated charts, confusion matrices, and the model comparison CSV |
 
 ---
 
 ## 🗂️ 15. Project Outputs
 
-| Output Type | File(s) |
-|---|---|
-| **Models** | `logistic_model.pkl`, `naive_bayes_model.pkl`, `random_forest_model.pkl`, `knn_model.pkl`, `neural_network_model.pkl` |
-| **Vectorizers** | `bow_vectorizer.pkl`, `tfidf_vectorizer.pkl` |
-| **Images** | `news_distribution.png`, `true_subject_distribution.png`, `article_length_distribution.png`, `model_accuracy.png` |
-| **CSV** | `outputs/model_results.csv`, `data/processed/merged_news.csv`, `data/cleaned/cleaned_news.csv` |
-| **Notebook** | `notebook/Fake_News_Detection.ipynb` |
-
-<p align="center">
-  <img src="images/screenshot_placeholder.png" alt="Project Screenshot Placeholder" width="600"/>
-  <br/>
-  <sub><i>📌 Placeholder — add a notebook/output screenshot here</i></sub>
-</p>
+| Output Type | Location | File(s) |
+|---|---|---|
+| **Models** | `Models/` | `logistic_model.pkl`, `naive_bayes_model.pkl`, `random_forest_model.pkl`, `knn_model.pkl`, `neural_network_model.pkl` |
+| **Vectorizers** | `Models/` | `bow_vectorizer.pkl`, `tfidf_vectorizer.pkl` |
+| **Charts & confusion matrices** | `Results/` | `news_distribution.png`, `true_subject_distribution.png`, `Fake_Subject_Distribution.png`, `article_length_distribution.png`, `model_accuracy.png`, `confusion_matrix_LR.png`, `confusion_matrix_NB.png`, `confusion_matrix_RF.png`, `confusion_matrix_knn.png`, `confusion_matrix_NN.png` |
+| **Model comparison CSV** | `Results/` | `model_results.csv` |
+| **Intermediate datasets** | `Dataset/` | `cleaned_news.csv` |
+| **Notebook** | `Notebook/` | `Fake_News_Detection.ipynb` |
+| **Documentation** | `Documentation/` | Project report / write-up material |
 
 ---
 
@@ -648,18 +674,16 @@ joblib
 </details>
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd AI-FAKE-NEWS-DETECTION
+git clone https://github.com/aakashimportant15-max/AI-Fake-News-Detection.git
 
-# Install dependencies
-pip install -r requirement.txt
+cd AI-Fake-News-Detection
 
-# Launch the notebook
-jupyter notebook notebook/Fake_News_Detection.ipynb
+pip install pandas numpy matplotlib scikit-learn nltk joblib
+
+jupyter notebook Notebook/Fake_News_Detection.ipynb
 ```
 
-Run all cells sequentially. The notebook expects `True.csv` and `Fake.csv` at `../data/raw/` relative to its location.
+Run all cells sequentially. The notebook expects `True.csv` and `Fake.csv` inside `Dataset/`, relative to its location.
 
 <details>
 <summary>🐍 Run a quick prediction</summary>
@@ -677,17 +701,17 @@ print("Result:", "Real News" if prediction[0] == 1 else "Fake News")
 
 ## 🚀 17. Usage Guide
 
-1. Place `True.csv` and `Fake.csv` inside `data/raw/`
-2. Run `notebook/Fake_News_Detection.ipynb` top to bottom
-3. Review visualizations auto-saved to `images/`
-4. Check `outputs/model_results.csv` for the full accuracy comparison
+1. Place `True.csv` and `Fake.csv` inside `Dataset/`
+2. Run `Notebook/Fake_News_Detection.ipynb` top to bottom
+3. Review visualizations auto-saved to `Results/`
+4. Check `Results/model_results.csv` for the full accuracy comparison
 5. Load any saved model + vectorizer for inference without retraining:
 
 ```python
 import joblib
 
-model = joblib.load("models/random_forest_model.pkl")
-vectorizer = joblib.load("models/tfidf_vectorizer.pkl")
+model = joblib.load("Models/random_forest_model.pkl")
+vectorizer = joblib.load("Models/tfidf_vectorizer.pkl")
 
 text = ["Sample news article text."]
 vector = vectorizer.transform(text)
